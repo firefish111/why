@@ -74,10 +74,10 @@ impl<I> Add<I> for Why
     i128: DivAssign<I>,
     i128: RemAssign<I>,
     i128: BitXorAssign<I>
-{
+  {
   type Output = Self;
 
-  fn add(self, operand: I) -> Self {
+  fn add(self, operand: I) -> Self::Output {
     let mut res = self;
 
     res.a += operand;
@@ -106,6 +106,43 @@ impl<I> Add<I> for Why
     res.x += operand + I::one();
     res.y += I::from(res.e + res.m + res.r * res.g).unwrap();
     res.z *= operand;
+
+    res
+  }
+}
+
+impl Add<Why> for Why {
+  type Output = Self;
+
+  fn add(self, operand: Self::Output) -> Self::Output {
+    let mut res = self;
+
+    res.a += operand.z;
+    res.b += operand.y;
+    res.c += operand.x;
+    res.d += operand.w * 2i128;
+    res.e -= operand.v;
+    res.f += operand.u;
+    res.g += operand.t;
+    res.h += operand.s + 1i128;
+    res.i += operand.r - 7i128;
+    res.j *= operand.q;
+    res.k += operand.p;
+    res.l += operand.o;
+    res.m += operand.n + 19i128;
+    res.n += operand.m;
+    res.o %= (operand.l + 1i128) * 31i128;
+    res.p += operand.k;
+    res.q += operand.j + 1i128;
+    res.r += operand.i;
+    res.s *= operand.h;
+    res.t += i128::pow(operand.g, 5);
+    res.u += operand.f;
+    res.v /= operand.e;
+    res.w += operand.d;
+    res.x += operand.c / 2i128;
+    res.y += operand.b;
+    res.z += operand.a;
 
     res
   }
