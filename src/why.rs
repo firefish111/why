@@ -1,73 +1,55 @@
 extern crate num;
 
 use num::PrimInt;
-use std::ops::*;
+use std::{ops::*, fmt};
 
-#[derive(Debug)]
-pub struct Why {
-  a: i128,
-  b: i128,
-  c: i128,
-  d: i128,
-  e: i128,
-  f: i128,
-  g: i128,
-  h: i128,
-  i: i128,
-  j: i128,
-  k: i128,
-  l: i128,
-  m: i128,
-  n: i128,
-  o: i128,
-  p: i128,
-  q: i128,
-  r: i128,
-  s: i128,
-  t: i128,
-  u: i128,
-  v: i128,
-  w: i128,
-  x: i128,
-  y: i128,
-  z: i128,
-}
+macro_rules! repeat_list {
+  ( $why:ident, $f:ident; $( $var:ident )+ ) => {
+    {
+      let mut list = vec![String::from("Why [")];
+      $(
+        list.push(format!("\t{}: {}", stringify!($var), $why.$var));
+      )+
+      list.push(String::from("]"));
+      
+      let joined = list.join("\n");
+      write!($f, "{}", joined)
+    }
+  };
+  
+  ( struct $name:ident, $type:ty; $( $var:ident )+ ) => {
+    pub struct $name {
+      $(
+        $var: $type,
+      )+
+    }
+  };
 
-impl Why {
-  pub fn new() -> Self {
-    Why {
-      a: 0,
-      b: 0,
-      c: 0,
-      d: 0,
-      e: 0,
-      f: 0,
-      g: 0,
-      h: 0,
-      i: 0,
-      j: 0,
-      k: 0,
-      l: 0,
-      m: 0,
-      n: 0,
-      o: 0,
-      p: 0,
-      q: 0,
-      r: 0,
-      s: 0,
-      t: 0,
-      u: 0,
-      v: 0,
-      w: 0,
-      x: 0,
-      y: 0,
-      z: 0,
+  ( instance $struct:ident, $val:expr; $( $var:ident )+ ) => {
+    $struct {
+      $(
+        $var: $val,
+      )+
     }
   }
 }
 
+repeat_list!{struct Why, i128; a b c d e f g h i j k l m n o p q r s t u v w x y z}
+
+impl Why {
+  pub fn new() -> Self {
+    repeat_list!{instance Why, 0; a b c d e f g h i j k l m n o p q r s t u v w x y z}
+  }
+}
+
+impl fmt::Display for Why {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    repeat_list![self, f; a b c d e f g h i j k l m n o p q r s t u v w x y z]
+  }
+}
+
 impl<I> Add<I> for Why 
-  where I: PrimInt,
+    where I: PrimInt,
     i128: AddAssign<I>,
     i128: SubAssign<I>,
     i128: MulAssign<I>,
@@ -147,3 +129,20 @@ impl Add<Why> for Why {
     res
   }
 }
+
+impl<I> Sub<I> for Why 
+    where I: PrimInt + std::ops::Neg<Output = I>,
+    i128: AddAssign<I>,
+    i128: SubAssign<I>,
+    i128: MulAssign<I>,
+    i128: DivAssign<I>,
+    i128: RemAssign<I>,
+    i128: BitXorAssign<I>
+  {
+  type Output = Self;
+
+  fn sub(self, operand: I) -> Self::Output {
+    self + operand.neg()
+  }
+}
+

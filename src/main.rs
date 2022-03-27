@@ -8,6 +8,6 @@ fn main() {
   let no = no + 9;
 
   let yes = yes + no;
-  let yes = yes + -4;
-  println!("Hello, world! {:?}", yes);
+  let yes = yes - 4;
+  println!("Hello, world! {}", yes);
 }
