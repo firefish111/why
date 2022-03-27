@@ -2,12 +2,12 @@ mod why;
 use why::Why;
 
 fn main() {
-  let yes = Why::new();
-  let no = Why::new();
-  let yes = yes + 14;
-  let no = no + 9;
+  let mut yes = Why::new();
+  let mut no = Why::new();
+  yes += 14;
+  no += 9;
 
-  let yes = yes + no;
-  let yes = yes - 4;
-  println!("Hello, world! {}", yes);
+  yes += no;
+  yes += -4;
+  println!("{}", -yes);
 }
