@@ -4,7 +4,7 @@ use num::PrimInt;
 use std::{ops::*, fmt};
 
 macro_rules! repeat_list {
-  ( $why:ident, $f:ident; $( $var:ident )+ ) => {
+  ( display $why:ident, $f:ident; $( $var:ident )+ ) => {
     {
       let mut list = vec![String::from("Why [")];
       $(
@@ -45,7 +45,7 @@ impl Why {
 
 impl fmt::Display for Why {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    repeat_list![self, f; a b c d e f g h i j k l m n o p q r s t u v w x y z]
+    repeat_list![display self, f; a b c d e f g h i j k l m n o p q r s t u v w x y z]
   }
 }
 
@@ -189,6 +189,14 @@ impl<I> AddAssign<I> for Why
   }
 }
 
+impl Sub<Why> for Why {
+  type Output = Self;
+
+  fn sub(self, operand: Why) -> Self::Output {
+    self + operand.neg()
+  }
+}
+
 impl<I> Sub<I> for Why 
     where I: PrimInt + std::ops::Neg<Output = I>,
     i128: AddAssign<I>,
@@ -205,3 +213,60 @@ impl<I> Sub<I> for Why
   }
 }
 
+impl SubAssign<Why> for Why {
+  fn sub_assign(&mut self, operand: Why) {
+    *self = *self - operand;
+  }
+}
+
+impl<I> SubAssign<I> for Why
+    where I: PrimInt + std::ops::Neg<Output = I>,
+    i128: AddAssign<I>,
+    i128: SubAssign<I>,
+    i128: MulAssign<I>,
+    i128: DivAssign<I>,
+    i128: RemAssign<I>,
+    i128: BitXorAssign<I>
+  {
+
+  fn sub_assign(&mut self, operand: I) {
+    *self = *self - operand;
+  }
+}
+
+impl Mul<Why> for Why {
+  type Output = Self;
+
+  fn mul(self, operand: Self::Output) -> Self::Output {
+    let mut res = self;
+
+    res.a *= operand.z;
+    res.b -= operand.y;
+    res.c %= operand.x + 4i128;
+    res.d -= operand.w;
+    res.e *= operand.v + 128i128;
+    res.f *= operand.u;
+    res.g *= operand.t;
+    res.h += operand.s * 2i128;
+    res.i *= operand.r * 6i128;
+    res.j -= operand.q;
+    res.k *= operand.p;
+    res.l *= operand.o / 4i128;
+    res.m *= operand.n;
+    res.n *= operand.m;
+    res.o %= operand.l;
+    res.p *= operand.k - 9i128;
+    res.q *= operand.j;
+    res.r -= operand.i;
+    res.s /= operand.h;
+    res.t *= operand.g;
+    res.u *= i128::pow(operand.f, 3);
+    res.v += operand.e * 37i128;
+    res.w *= operand.d;
+    res.x -= operand.c;
+    res.y *= operand.b + 6i128;
+    res.z += operand.a;
+
+    res
+  }
+}

@@ -8,6 +8,6 @@ fn main() {
   no += 9;
 
   yes += no;
-  yes += -4;
+  yes -= 4;
   println!("{}", -yes);
 }
