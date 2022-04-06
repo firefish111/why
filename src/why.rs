@@ -1,6 +1,8 @@
 extern crate num;
+extern crate serde;
 
 use num::PrimInt;
+use serde::{Serialize, Deserialize};
 use std::{ops::*, fmt};
 
 macro_rules! repeat_list {
@@ -18,7 +20,7 @@ macro_rules! repeat_list {
   };
   
   ( struct $name:ident, $type:ty; $( $var:ident )+ ) => {
-    #[derive(Clone, Copy)]
+    #[derive(Clone, Copy, Serialize, Deserialize)]
     pub struct $name {
       $(
         $var: $type,
@@ -38,8 +40,8 @@ macro_rules! repeat_list {
 repeat_list!{struct Why, i128; a b c d e f g h i j k l m n o p q r s t u v w x y z}
 
 impl Why {
-  pub fn new() -> Self {
-    repeat_list!{instance Why, 0; a b c d e f g h i j k l m n o p q r s t u v w x y z}
+  pub fn new(value: i128) -> Self {
+    repeat_list!{instance Why, value; a b c d e f g h i j k l m n o p q r s t u v w x y z}
   }
 }
 
@@ -106,7 +108,7 @@ impl Add<Why> for Why {
     res.l += operand.o;
     res.m += operand.n + 19i128;
     res.n += operand.m;
-    res.o %= (operand.l + 1i128) * 31i128;
+    res.o = res.o.checked_rem(i128::from((operand.l + 1i128) * 31i128)).unwrap_or(1);
     res.p += operand.k;
     res.q += operand.j + 1i128;
     res.r += operand.i;
@@ -130,7 +132,8 @@ impl<I> Add<I> for Why
     i128: MulAssign<I>,
     i128: DivAssign<I>,
     i128: RemAssign<I>,
-    i128: BitXorAssign<I>
+    i128: BitXorAssign<I>,
+    i128: From<I>
   {
   type Output = Self;
 
@@ -155,7 +158,7 @@ impl<I> Add<I> for Why
     res.p -= operand - I::from(7i128).unwrap();
     res.q += operand;
     res.r += operand;
-    res.s %= operand * I::from(15i128).unwrap();
+    res.s = res.s.checked_rem(i128::from(operand) * 15i128).unwrap_or(1);
     res.t -= operand;
     res.u ^= operand + I::one();
     res.v += operand - I::from(-9i128).unwrap();
@@ -181,7 +184,8 @@ impl<I> AddAssign<I> for Why
     i128: MulAssign<I>,
     i128: DivAssign<I>,
     i128: RemAssign<I>,
-    i128: BitXorAssign<I>
+    i128: BitXorAssign<I>,
+    i128: From<I>
   {
 
   fn add_assign(&mut self, operand: I) {
@@ -204,7 +208,8 @@ impl<I> Sub<I> for Why
     i128: MulAssign<I>,
     i128: DivAssign<I>,
     i128: RemAssign<I>,
-    i128: BitXorAssign<I>
+    i128: BitXorAssign<I>,
+    i128: From<I>
   {
   type Output = Self;
 
@@ -226,7 +231,8 @@ impl<I> SubAssign<I> for Why
     i128: MulAssign<I>,
     i128: DivAssign<I>,
     i128: RemAssign<I>,
-    i128: BitXorAssign<I>
+    i128: BitXorAssign<I>,
+    i128: From<I>
   {
 
   fn sub_assign(&mut self, operand: I) {
@@ -242,7 +248,7 @@ impl Mul<Why> for Why {
 
     res.a *= operand.z;
     res.b -= operand.y;
-    res.c %= operand.x + 4i128;
+    res.c = res.c.checked_rem(i128::from(operand.x + 4i128)).unwrap_or(1);
     res.d -= operand.w;
     res.e *= operand.v + 128i128;
     res.f *= operand.u;
@@ -254,7 +260,7 @@ impl Mul<Why> for Why {
     res.l *= operand.o / 4i128;
     res.m *= operand.n;
     res.n *= operand.m;
-    res.o %= operand.l;
+    res.o *= operand.l;
     res.p *= operand.k - 9i128;
     res.q *= operand.j;
     res.r -= operand.i;
