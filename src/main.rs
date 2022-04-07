@@ -18,16 +18,17 @@ fn send(input: Why) -> Result<(), Box<dyn std::error::Error>> {
 fn main() {
   let mut yes = Why::new(0);
   let mut no = Why::new(0);
-/*  yes += 14;
+  yes += 14;
   no += 9;
 
   yes += no;
   yes -= 4;
-  yes = -yes;*/
+  yes = -yes;
   no += 99;
   yes -= 67;
-  yes = yes * no;
+  no *= 8;
+  yes *= no;
 
   println!("{}", yes);
-  send(yes); 
+//  send(yes); 
 }

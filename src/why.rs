@@ -1,7 +1,7 @@
 extern crate num;
 extern crate serde;
 
-use num::PrimInt;
+use num::{PrimInt, traits::CheckedRem};
 use serde::{Serialize, Deserialize};
 use std::{ops::*, fmt};
 
@@ -274,5 +274,73 @@ impl Mul<Why> for Why {
     res.z += operand.a;
 
     res
+  }
+}
+
+impl<I: CheckedRem> Mul<I> for Why 
+    where I: PrimInt + std::ops::Neg<Output = I>,
+    i128: AddAssign<I>,
+    i128: SubAssign<I>,
+    i128: MulAssign<I>,
+    i128: DivAssign<I>,
+    i128: RemAssign<I>,
+    i128: BitXorAssign<I>,
+    i128: From<I>
+  {
+  type Output = Self;
+
+  fn mul(self, operand: I) -> Self::Output {
+    let mut res = self;
+
+    res.a *= operand;
+    res.b *= operand;
+    res.c -= I::pow(operand, 3u32);
+    res.d *= operand;
+    res.e *= operand + I::one();
+    res.f += operand;
+    res.g *= operand;
+    res.h *= operand - I::one();
+    res.i -= operand;
+    res.j *= operand;
+    res.k += operand / I::from(2i128).unwrap();
+    res.l *= operand;
+    res.m *= operand;
+    res.n += operand * I::from(8i128).unwrap();
+    res.o *= operand - I::one();
+    res.p *= operand;
+    res.q += operand;
+    res.r /= operand;
+    res.s *= operand;
+    res.t *= operand;
+    res.u += operand.checked_rem(&I::from(37i128).unwrap()).unwrap_or(I::one());
+    res.v -= operand;
+    res.w *= operand;
+    res.x *= -operand * I::from(19i128).unwrap();
+    res.y += operand;
+    res.z *= operand + I::one();
+
+    res
+  }
+}
+
+impl MulAssign<Why> for Why {
+  fn mul_assign(&mut self, operand: Why) {
+    *self = *self - operand;
+  }
+}
+
+impl<I> MulAssign<I> for Why
+    where I: PrimInt + std::ops::Neg<Output = I>,
+    i128: AddAssign<I>,
+    i128: SubAssign<I>,
+    i128: MulAssign<I>,
+    i128: DivAssign<I>,
+    i128: RemAssign<I>,
+    i128: BitXorAssign<I>,
+    i128: From<I>
+  {
+
+  fn mul_assign(&mut self, operand: I) {
+    *self = *self - operand;
   }
 }
